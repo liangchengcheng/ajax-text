@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<div>
+    <div id="searchbox">
+        <input type="text" id="keyword" />
+        <ul id="hits" style="display: none;"></ul>
+    </div>
+    <button id="searchbtn">搜索</button>
+</div>
+<script>
+    document.getElementById('keyword').oninput=function(){
+        var keyword=this.value;
+        var xhr=new XMLHttpRequest();
+
+        xhr.open('GET','keyword/hit?keyword='+encodeURIComponent(keyword),true);
+        xhr.setRequestHeader("Content-Type","application/json");
+        xhr.onreadystatechange=function(){
+            if(xhr.readyState==4&&xhr.status==200){
+                handleResult(xhr.responseText);
+            }
+        };
+        xhr.onload=function(){
+
+        };
+        xhr.onloadend=function(){
+
+        };
+        xhr.timeout=5000;
+        xhr.ontimeout=function(){
+
+        };
+        xhr.send(JSON.stringify({
+            keyword:'c',
+            other:'test'
+        }));
+    };
+    function handleResult(ret){
+        ret=JSON.parse(ret);
+        var dom=document.getElementById('hits');
+        if(ret.length){
+            var lis=[];
+            for(var i= 0,len=ret.length;i<len;++i){
+                lis.push('<li>'+ret[i]+'</li>');
+            }
+            dom.innerHTML=lis.join('');
+            dom.style.display='none';
+        }else{
+            dom.innerHTML='';
+            dom.style.display='none';
+        }
+    }
+
+    document.getElementById('hits').onclick=function(event){
+        document.getElementById('keyword').value=event.target.innerHTML;
+        this.style.display='none';
+    }
+
+</script>
+</body>
+</html>
